@@ -9,15 +9,23 @@
         <h5>
             Submit X-Y column Names
         </h5>
-        <form action="{{ url_for('form_data')}}" method="post">
-    
+        <img src="{{url_for('static', filename='download.jpg')}}" />
+
+        <!-- The url_for() function is very useful for dynamically building a URL for a specific function -->
+        <!--form action="{{ url_for('form_data')}}" method="post"-->
+        <form  method="post">
             <label for="firstname">X Column:</label>
             <input type="text" id="firstname" name="x_col" placeholder="X">
             <label for="lastname">Y Column:</label>
             <input type="text" id="lastname" name="y_col" placeholder="Y">
+            <label for="plot_type">Plot Type:</label>
+            <input type="text" id="plot_type" name="plot_type" placeholder="Type">
             <button type="submit">Submit</button>
         </form>
+        <img src="{{url_for('form_data')}}">
 
+
+        
         
     </body>
 </html>

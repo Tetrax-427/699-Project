@@ -8,9 +8,6 @@ import seaborn as sns
 import pandas as pd
 
 
-fig,ax= plt.subplots(figsize=(6,6))
-ax=sns.set_style(style="darkgrid")
-
 data=pd.read_excel("data.xlsx")
 X=data["A"].to_list()
 Y=data["B"].to_list()
@@ -31,19 +28,48 @@ def form_data():
         # getting input with name = x_col in HTML form
         y_col = request.form.get("y_col")
         
+        plot_type=request.form.get("plot_type")
+        
+        
         X=data[x_col].to_list()
         Y=data[y_col].to_list()
 
-        
-        
-        plt.plot(X,Y)
-        plt.xlabel(x_col)
-        plt.ylabel(y_col)
-        canvas=FigureCanvas(fig)
-        img=io.BytesIO()
-        fig.savefig(img)
-        img.seek(0)
-        return send_file(img,mimetype='img/png')
+        x_size=6
+        y_size=6
+        if plot_type=='1':
+            fig,ax= plt.subplots(figsize=(x_size,y_size))
+            ax=sns.set_style(style="darkgrid")
+            plt.plot(X,Y)       #LINE graph
+            plt.xlabel(x_col)
+            plt.ylabel(y_col)
+            canvas=FigureCanvas(fig)
+            img=io.BytesIO()
+            fig.savefig(img)
+            img.seek(0)
+            return send_file(img,mimetype='img/png')
+        elif plot_type=="2":
+            fig,ax= plt.subplots(figsize=(x_size,y_size))
+            ax=sns.set_style(style="darkgrid")
+            plt.bar(Y, X, width = 0.4)  #BAR graph
+            plt.xlabel(x_col)
+            plt.ylabel(y_col)
+            canvas=FigureCanvas(fig)
+            img=io.BytesIO()
+            fig.savefig(img)
+            img.seek(0)
+            return send_file(img,mimetype='img/png')
+        elif plot_type=="3":
+            fig,ax= plt.subplots(figsize=(x_size,y_size))
+            ax=sns.set_style(style="darkgrid")
+            plt.scatter(X,Y)     #Scatter Plot
+            plt.xlabel(x_col)
+            plt.ylabel(y_col)
+            canvas=FigureCanvas(fig)
+            img=io.BytesIO()
+            fig.savefig(img)
+            img.seek(0)
+            return send_file(img,mimetype='img/png')
+
     return render_template('form.html')
 
 
@@ -56,9 +82,8 @@ def visualize():
     img=io.BytesIO()
     fig.savefig(img)
     img.seek(0)
-    return send_file(img,mimetype='img/png')
-      
-      
+    return send_file(img,mimetype='img/jpg')
+
+
 if __name__=="__main__":
     app.run()
-    
