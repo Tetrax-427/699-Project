@@ -9,7 +9,7 @@
         <h5>
             Submit X-Y column Names
         </h5>
-        <img src="{{url_for('static', filename='download.jpg')}}" />
+        <!--<img src="{{url_for('static', filename='download.jpg')}}" /> -->
 
         <!-- The url_for() function is very useful for dynamically building a URL for a specific function -->
         <!--form action="{{ url_for('form_data')}}" method="post"-->
@@ -22,7 +22,7 @@
             <input type="text" id="plot_type" name="plot_type" placeholder="Type">
             <button type="submit">Submit</button>
         </form>
-        <img src="{{url_for('form_data')}}">
+        <img src="{{url_for('visualize')}}">
 
 
         
