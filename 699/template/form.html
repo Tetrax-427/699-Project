@@ -13,7 +13,32 @@
 
         <!-- The url_for() function is very useful for dynamically building a URL for a specific function -->
         <!--form action="{{ url_for('form_data')}}" method="post"-->
-        <form  method="post">
+
+        <p>
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <ul class=flashes>
+                {% for message in messages %}
+                  <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+              {% endif %}
+            {% endwith %}
+        </p>
+        <form method="post" action="{{ url_for('upload_file')}}" enctype="multipart/form-data">
+            <dl>
+                <p>
+                    <input type="file" name="files[]" multiple="true" autocomplete="off" required>
+                </p>
+            </dl>
+            <p>
+                <input type="submit" value="Submit">
+            </p>
+        </form>
+
+        <form action="{{ url_for('form_data')}}" method="post">
+
+        
             <label for="firstname">X Column:</label>
             <input type="text" id="firstname" name="x_col" placeholder="X">
             <label for="lastname">Y Column:</label>
@@ -22,7 +47,14 @@
             <input type="text" id="plot_type" name="plot_type" placeholder="Type">
             <button type="submit">Submit</button>
         </form>
+
+
+
+        <table>
+           
+        </table>
         <img src="{{url_for('visualize')}}">
+
 
 
         
