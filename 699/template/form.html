@@ -4,10 +4,19 @@
         <title>
             TRIAL
         </title>
+        <link rel="stylesheet" type="text/css" href="style.css">
     </head>
     <body>
-        <h5>
-            Submit X-Y column Names
+        <h5 style = "font-size: 30px;
+        font-weight: 600;
+        background-image: linear-gradient(to left, #00ffa2, #17641d);
+        color: transparent;
+        background-clip: text;
+        -webkit-background-clip: text;
+        padding-bottom: 50px;
+        padding-top: 50px;
+        padding-left: 10px">
+            GRAPH PLOTTER
         </h5>
         <!--<img src="{{url_for('static', filename='download.jpg')}}" /> -->
 
@@ -28,24 +37,49 @@
         <form method="post" action="{{ url_for('upload_file')}}" enctype="multipart/form-data">
             <dl>
                 <p>
-                    <input type="file" name="files[]" multiple="true" autocomplete="off" required>
+                    <input style=" background-color: #04AA6D;
+                    color: white;
+                    padding: 14px 20px;
+                    margin: 8px 8px;
+                    border: none;
+                    border-radius: 4px;" type="file" name="files[]" multiple="true" autocomplete="off" required>
                 </p>
             </dl>
             <p>
-                <input type="submit" value="Submit">
+                <input style=" width: 15%;
+                background-color: #04AA6D;
+                color: white;
+                padding: 14px 20px;
+                margin: 8px 8px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;" type="submit" value="Submit">
             </p>
         </form>
 
         <form action="{{ url_for('form_data')}}" method="post">
 
         
-            <label for="firstname">X Column:</label>
+            <label for="firstname" style="font-size: 20px;color: #04AA6D">X Column:</label>
             <input type="text" id="firstname" name="x_col" placeholder="X">
-            <label for="lastname">Y Column:</label>
+            <label for="lastname" style="font-size: 20px;color: #04AA6D">Y Column:</label>
             <input type="text" id="lastname" name="y_col" placeholder="Y">
-            <label for="plot_type">Plot Type:</label>
-            <input type="text" id="plot_type" name="plot_type" placeholder="Type">
-            <button type="submit">Submit</button>
+            <div class="dropdown">
+                <button class="dropbtn">Plot Type</button>
+                <div class="dropdown-content">
+                  <a href="#" id="bar_graph" >Bar Graph</a>
+                  <a href="#" id="scatter plot">Scatter Plot</a>
+                  <a href="#" id="line graph">Line Graph</a>
+                </div>
+              </div>
+            <button style=" width: 15%;
+            background-color: #04AA6D;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;" type="submit">Submit</button>
         </form>
 
 
