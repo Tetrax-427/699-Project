@@ -1,6 +1,0 @@
-This is the first commit from vs code
-
-<<<<<<< HEAD
-
-=======
->>>>>>> 27745948019096327a25c195e51dcb95673b5989
