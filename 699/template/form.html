@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -9,6 +10,8 @@
             form {text-align: center;}
             img  {text-align: center;}
             li  {text-align: center;}
+
+            
             </style>
         <title>
             TRIAL
@@ -44,6 +47,8 @@
               {% endif %}
             {% endwith %}
         </p>
+        
+
         <form method="post" action="{{ url_for('upload_file')}}" enctype="multipart/form-data">
            
                 <p>
@@ -66,7 +71,8 @@
                 cursor: pointer;" type="submit" value="Submit">
             </p>
         </form>
-
+        <iframe src="{{url_for('static', filename='plot.html')}}" style="height:200px;width:300px;" title="Iframe Example">DATA FRAME</iframe>
+        
         <form action="{{ url_for('form_data')}}" method="post">
 
         

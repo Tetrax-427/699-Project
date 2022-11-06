@@ -10,6 +10,9 @@ import pandas as pd
 import numpy as np
 import os
 import shutil
+import random
+
+
 
 
 app=Flask(__name__,template_folder='template')
@@ -36,8 +39,8 @@ Y=[6,8,4,2,1,2,4,8,6]
 
 x_size=15
 y_size=6
-x_col="X-Label"
-y_col="Y-Label"
+x_col="A"
+y_col="B"
 
 y_vals=[]
 plot_type=1
@@ -50,9 +53,22 @@ def allowed_file(filename):
 def home():
     return render_template('form.html')
 
+@app.route('/iframe')
+def iframe():
+    
+    #global df
+    global uploaded_file
+    
+    
+    
+    return render_template('plot.html')
+
+
 @app.route('/upload_file', methods=['POST'])
 def upload_file():
     global file_names
+    global uploaded_file
+    global df
     if request.method == 'POST':
 
         if 'files[]' not in request.files:
@@ -67,8 +83,19 @@ def upload_file():
                 filename = secure_filename(file.filename)
                 file_names.append(filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        
+        
+        uploaded_file = os.path.join(UPLOAD_FOLDER, file_names[-1])
+        df=pd.read_excel(uploaded_file)
+        flash('File in Use: ' + file_names[-1]  )
+        data=pd.read_excel(uploaded_file)
+        print("In IFrame :  ",uploaded_file)
+        print(data.head())
+        html_page = data.to_html(index=False)
 
-        flash('File in Use: ' + file_names[-1])
+        to_html = open("static/plot.html", "w")
+        to_html.write(html_page)
+        to_html.close()
         return render_template('form.html')
     
 
@@ -101,7 +128,8 @@ def form_data():
         plot_type=request.form.get("plot_type")
         print(y_vals)
         
-        uploaded_file = os.path.join(UPLOAD_FOLDER, file_names[-1])
+        
+        
         df=pd.read_excel(uploaded_file)
         
         
@@ -109,7 +137,9 @@ def form_data():
 
         x_size=6
         y_size=6
-        flash('File in Use: ' + file_names[-1])  
+        flash('File in Use: ' + file_names[-1])
+        
+         
     return render_template('form.html')
 
 @app.route('/visualize')
