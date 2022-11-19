@@ -29,7 +29,7 @@ if not os.path.isdir(UPLOAD_FOLDER):
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Allowed extension you can set your own
-ALLOWED_EXTENSIONS = set(['xlsx','csv'])
+ALLOWED_EXTENSIONS = set(['xlsx'])
 
 df=pd.read_excel("data.xlsx")
 uploaded_file="data.xlsx"
@@ -42,9 +42,14 @@ y_size=6
 x_col="A"
 y_col="B"
 
-y_vals=[]
+y_vals=["A","B"]
 plot_type=1
 
+colors=["red","forestgreen","royalblue","darkorange",
+        "deepskyblue","deeppink","teal",
+        "greenyellow","crimson","violet",
+        "darkcyan","purple","gold","navy"
+        ]
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -90,10 +95,45 @@ def upload_file():
         flash('File in Use: ' + file_names[-1]  )
         data=pd.read_excel(uploaded_file)
         
-        html_page = data.to_html(index=False,justify= "center", classes="w3-table-all")
+        html_page = data.to_html(index=False)
+        css="""<head>
+<style>
+table, td, th {  
+  border: 1px solid #ddd;
+  text-align: left;
+}
 
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  padding: 15px;
+  text-align: center;
+}
+
+th{
+    background-color: MediumSeaGreen;
+}
+th.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+tr:nth-child(even) {
+  background-color: rgba(150, 212, 212, 0.4);
+}
+
+td:nth-child(even) {
+  background-color: rgba(150, 212, 212, 0.4);
+}
+
+</style>
+</head>
+        """
         to_html = open("static/plot.html", "w")
-        to_html.write(html_page)
+        to_html.write(css+html_page)
         to_html.close()
         return render_template('form.html')
     
@@ -118,18 +158,23 @@ def form_data():
         
         # getting input with name = x_col in HTML form
         #data=request.form.get("FILE")
-        x_col= request.form.get("x_col")
+        x_co= request.form.get("x_col")
+        if x_co!="":
+            x_col=x_co
         # getting input with name = x_col in HTML form
-        y_vals = request.form.get("y_col")
-        y_vals=y_vals.split(',')
+        y_va = request.form.get("y_col")
+        if y_va!="":
+            y_vals=y_va.split(',')
+            y_col=y_vals[0]
+            
+            
+        plot_tp=request.form.get("plot_type")
+        if plot_tp!="":
+            plot_type=plot_tp
         
-        y_col=y_vals[0]
-        plot_type=request.form.get("plot_type")
-        print(y_vals)
         
-        
-        
-        df=pd.read_excel(uploaded_file)
+        if len(file_names)!=0:
+            df=pd.read_excel(uploaded_file)
         
         
         
@@ -154,7 +199,7 @@ def visualize():
         ax=sns.set_style(style="darkgrid")
         for y in y_vals:
             Y=df[y].to_list()
-            plt.plot(X,Y)       #LINE graph
+            plt.plot(X,Y,color= colors[y_vals.index(y)])       #LINE graph
         #plt.legend()
         canvas=FigureCanvas(fig)
         img=io.BytesIO()
@@ -172,13 +217,13 @@ def visualize():
         w=0.6/L
         a=w/2
         a=-1*a
-        for y in y_vals:
+        for i in range(len(y_vals)):
+            y=y_vals[i]
             Y=df[y].to_list()
             X_axis = np.arange(len(X))
-            plt.bar(X_axis+a, Y, width = w)      #bar graph
+            plt.bar(X_axis+a, Y, width = w, color= colors[i])      #bar graph
             a=a+w
         plt.xticks(X_axis, X)
-        plt.legend()
         canvas=FigureCanvas(fig)
         img=io.BytesIO()
         fig.savefig(img)
@@ -192,17 +237,19 @@ def visualize():
            #Scatter Plot
         for y in y_vals:
             Y=df[y].to_list()
-            plt.scatter(X,Y)        #SCatter graph
-        plt.legend()
+            plt.scatter(X,Y,color= colors[y_vals.index(y)])        #SCatter graph
+        
         canvas=FigureCanvas(fig)
         img=io.BytesIO()
         fig.savefig(img)
         img.seek(0)
         
         return send_file(img,mimetype='img/png')
+    
     elif plot_type=="Histogram":
-        Y=df[y_col].to_list()
-        
+        y_col=y_vals[0]
+        Y=df[x_col].to_list()
+        X=df[y_col].to_list()
         n_bins = len(set(X))
  
         # Creating distribution
@@ -242,7 +289,7 @@ def visualize():
         return send_file(img,mimetype='img/jpg')
     
     elif plot_type=="Pie Chart":
-        
+        y_col=y_vals[0]
         Y=df[y_col].to_list()
         fig,ax= plt.subplots(figsize=(x_size,y_size))
         ax=sns.set_style(style="darkgrid")
@@ -255,24 +302,30 @@ def visualize():
         return send_file(img,mimetype='img/jpg')
 
     else:
-        Y=df[y_col].to_list()
-        fig,ax= plt.subplots(figsize=(x_size,y_size))
-        ax=sns.set_style(style="darkgrid")
-    
-        plt.plot(X,Y)
-        plt.xlabel(x_col)
-        plt.ylabel(y_col)
-        canvas=FigureCanvas(fig)
-        img=io.BytesIO()
-        fig.savefig(img)
-        img.seek(0)
-        return send_file(img,mimetype='img/jpg')
+        
+        return send_file("static/download.jpg")
 
 @app.route('/download', methods =["GET", "POST"])
 def download():
     if request.method == "POST":
         return visualize()
-        
 
+@app.route('/legend')
+def legend():    
+    y=[0,0,0,0]
+    x=[1,2,3,4]
+    fig,ax= plt.subplots(figsize=(1,len(y_vals)))
+      
+    
+  
+    #Adding text inside a rectangular box by using the keyword 'bbox'
+    #for i in range(len(y_vals)):
+    for i in range(len(y_vals)):
+        plt.text(0.5, 0.8-0.2*i, y_vals[i], fontsize = 16,color = colors[i])
+    #plt.plot(x, y, c = 'g')
+    img=io.BytesIO()
+    fig.savefig(img)
+    img.seek(0)
+    return send_file(img,mimetype='img/jpg')
 if __name__=="__main__":
     app.run()
