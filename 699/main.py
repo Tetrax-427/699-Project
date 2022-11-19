@@ -89,9 +89,8 @@ def upload_file():
         df=pd.read_excel(uploaded_file)
         flash('File in Use: ' + file_names[-1]  )
         data=pd.read_excel(uploaded_file)
-        print("In IFrame :  ",uploaded_file)
-        print(data.head())
-        html_page = data.to_html(index=False)
+        
+        html_page = data.to_html(index=False,justify= "center", classes="w3-table-all")
 
         to_html = open("static/plot.html", "w")
         to_html.write(html_page)
@@ -269,6 +268,11 @@ def visualize():
         img.seek(0)
         return send_file(img,mimetype='img/jpg')
 
+@app.route('/download', methods =["GET", "POST"])
+def download():
+    if request.method == "POST":
+        return visualize()
+        
 
 if __name__=="__main__":
     app.run()
