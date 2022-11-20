@@ -13,7 +13,7 @@
             
             </style>
         <title>
-            TRIAL
+            CS699 Project
         </title>
         
         <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
@@ -21,7 +21,7 @@
     <body>
         <h5 style = "font-size: 30px;
         font-weight: 600;
-        background-image: linear-gradient(to left, #00ffa2, #17641d);
+        background-image: linear-gradient(to left, #75eec1, #17641d);
         color: transparent;
         background-clip: text;
         -webkit-background-clip: text;
@@ -51,7 +51,7 @@
         <form method="post" action="{{ url_for('upload_file')}}" enctype="multipart/form-data">
            
                 <p>
-                    <input style=" background-color: #04AA6D;
+                    <input style=" background-color: #41eeae;
                     color: white;
                     padding: 14px 20px;
                     margin: 8px 8px;
@@ -61,7 +61,7 @@
             
             <p>
                 <input style=" width: 15%;
-                background-color: #04AA6D;
+                background-color: #4fd2a2;
                 color: white;
                 padding: 14px 20px;
                 margin: 8px 8px;
@@ -105,17 +105,30 @@
             cursor: pointer;" type="submit">Plot</button>
         </form>
         <form action="{{ url_for('download')}}" method="post">
-            <button type="submit">download</button>
+            <button style=" width: 15%;
+            background-color: #50e9b1;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;" type="submit">DownLoad</button>
         </form>
 
 
         <table>
            
         </table>
-        <img src="{{url_for('visualize')}}">
-        
-        <img src="{{url_for('legend')}}">
+        <div class="row">
+            <div class="column1">
+            <img src="{{url_for('visualize')}}">
+            </div>
 
+            <div class="column2">
+            <img src="{{url_for('legend')}}">
+            </div>
+        
+        </div>
 
 
         

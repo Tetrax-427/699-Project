@@ -37,7 +37,7 @@ X=[1,2,3,4,5,6,7,8,9]
 Y=[6,8,4,2,1,2,4,8,6]
 
 
-x_size=15
+x_size=13
 y_size=6
 x_col="A"
 y_col="B"
@@ -114,7 +114,7 @@ th, td {
 }
 
 th{
-    background-color: MediumSeaGreen;
+    background-color: rgb(76, 209, 136);
 }
 th.sticky {
   position: fixed;
@@ -314,18 +314,14 @@ def download():
 def legend():    
     y=[0,0,0,0]
     x=[1,2,3,4]
-    fig,ax= plt.subplots(figsize=(1,len(y_vals)))
+    fig1,ax1= plt.subplots(figsize=(1,len(y_vals)))
       
-    
-  
-    #Adding text inside a rectangular box by using the keyword 'bbox'
-    #for i in range(len(y_vals)):
     for i in range(len(y_vals)):
         plt.text(0.5, 0.8-0.2*i, y_vals[i], fontsize = 16,color = colors[i])
     #plt.plot(x, y, c = 'g')
-    img=io.BytesIO()
-    fig.savefig(img)
-    img.seek(0)
-    return send_file(img,mimetype='img/jpg')
+    img1=io.BytesIO()
+    fig1.savefig(img1)
+    img1.seek(0)
+    return send_file(img1,mimetype='img1/jpg')
 if __name__=="__main__":
     app.run()
