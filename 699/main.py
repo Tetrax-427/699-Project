@@ -13,8 +13,6 @@ import shutil
 import random
 
 
-
-
 app=Flask(__name__,template_folder='template')
 file_names=[]
 app.secret_key = "secret key"
@@ -36,6 +34,43 @@ uploaded_file="data.xlsx"
 X=[1,2,3,4,5,6,7,8,9]
 Y=[6,8,4,2,1,2,4,8,6]
 
+css="""<head>
+<style>
+table, td, th {  
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  padding: 15px;
+  text-align: center;
+}
+
+th{
+    background-color: rgb(76, 209, 136);
+}
+th.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+tr:nth-child(even) {
+  background-color: rgba(150, 212, 212, 0.4);
+}
+
+td:nth-child(even) {
+  background-color: rgba(150, 212, 212, 0.4);
+}
+
+</style>
+</head>
+"""
+        
 
 x_size=13
 y_size=6
@@ -96,42 +131,6 @@ def upload_file():
         data=pd.read_excel(uploaded_file)
         
         html_page = data.to_html(index=False)
-        css="""<head>
-<style>
-table, td, th {  
-  border: 1px solid #ddd;
-  text-align: left;
-}
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-th, td {
-  padding: 15px;
-  text-align: center;
-}
-
-th{
-    background-color: rgb(76, 209, 136);
-}
-th.sticky {
-  position: fixed;
-  top: 0;
-  width: 100%;
-}
-tr:nth-child(even) {
-  background-color: rgba(150, 212, 212, 0.4);
-}
-
-td:nth-child(even) {
-  background-color: rgba(150, 212, 212, 0.4);
-}
-
-</style>
-</head>
-        """
         to_html = open("static/plot.html", "w")
         to_html.write(css+html_page)
         to_html.close()
@@ -303,7 +302,7 @@ def visualize():
 
     else:
         
-        return send_file("static/download.jpg")
+        return send_file("static/start.png")
 
 @app.route('/download', methods =["GET", "POST"])
 def download():
@@ -315,10 +314,14 @@ def legend():
     y=[0,0,0,0]
     x=[1,2,3,4]
     fig1,ax1= plt.subplots(figsize=(1,len(y_vals)))
-      
+    
+    plt.text(0.0, 0.8, "Legend", fontsize = 16,color = "black")
+    plt.text(0.0, 0.7, "----------", fontsize = 16,color = "black")
+    
     for i in range(len(y_vals)):
-        plt.text(0.5, 0.8-0.2*i, y_vals[i], fontsize = 16,color = colors[i])
+        plt.text(0.5, 0.7-0.2*(1+i), y_vals[i], fontsize = 16,color = colors[i])
     #plt.plot(x, y, c = 'g')
+    plt.axis('off')
     img1=io.BytesIO()
     fig1.savefig(img1)
     img1.seek(0)
