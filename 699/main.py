@@ -70,15 +70,18 @@ td:nth-child(even) {
 </style>
 </head>
 """
-        
+html_page = df.to_html(index=False)
+to_html = open("static/plot.html", "w")
+to_html.write(css+html_page)
+to_html.close()      
 
 x_size=13
 y_size=6
 x_col="A"
-y_col="B"
+y_col="C"
+y_vals=["A","C"]
 
-y_vals=["A","B"]
-plot_type=1
+plot_type=-1
 
 colors=["red","forestgreen","royalblue","darkorange",
         "deepskyblue","deeppink","teal",
@@ -95,12 +98,8 @@ def home():
 
 @app.route('/iframe')
 def iframe():
-    
     #global df
     global uploaded_file
-    
-    
-    
     return render_template('plot.html')
 
 
@@ -109,6 +108,9 @@ def upload_file():
     global file_names
     global uploaded_file
     global df
+    global x_col
+    global y_vals
+    global plot_type
     if request.method == 'POST':
 
         if 'files[]' not in request.files:
@@ -134,6 +136,10 @@ def upload_file():
         to_html = open("static/plot.html", "w")
         to_html.write(css+html_page)
         to_html.close()
+        y_vals=list(df.columns)
+        x_col=y_vals[0]
+        y_vals=y_vals[0]
+        plot_type=-1
         return render_template('form.html')
     
 
@@ -157,6 +163,7 @@ def form_data():
         
         # getting input with name = x_col in HTML form
         #data=request.form.get("FILE")
+        
         x_co= request.form.get("x_col")
         if x_co!="":
             x_col=x_co
@@ -175,14 +182,11 @@ def form_data():
         if len(file_names)!=0:
             df=pd.read_excel(uploaded_file)
         
+    
+        if len(file_names)>0:
+            flash('File in Use: ' + file_names[-1])
         
-        
-
-        x_size=6
-        y_size=6
-        flash('File in Use: ' + file_names[-1])
-        
-         
+     
     return render_template('form.html')
 
 @app.route('/visualize')
@@ -300,9 +304,12 @@ def visualize():
         img.seek(0)
         return send_file(img,mimetype='img/jpg')
 
+   
     else:
-        
+        if len(file_names)!=0:
+            return send_file("static/start2.png")
         return send_file("static/start.png")
+        
 
 @app.route('/download', methods =["GET", "POST"])
 def download():
@@ -311,13 +318,13 @@ def download():
 
 @app.route('/legend')
 def legend():    
-    y=[0,0,0,0]
-    x=[1,2,3,4]
     fig1,ax1= plt.subplots(figsize=(1,len(y_vals)))
     
     plt.text(0.0, 0.8, "Legend", fontsize = 16,color = "black")
     plt.text(0.0, 0.7, "----------", fontsize = 16,color = "black")
     
+    if plot_type==-1:
+        return send_file("static/start3.png")
     for i in range(len(y_vals)):
         plt.text(0.5, 0.7-0.2*(1+i), y_vals[i], fontsize = 16,color = colors[i])
     #plt.plot(x, y, c = 'g')
