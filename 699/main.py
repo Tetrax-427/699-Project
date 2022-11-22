@@ -1,7 +1,6 @@
 import mimetypes
 from flask import Flask, flash, redirect,send_file,render_template,request
 import io
-import base64
 from werkzeug.utils import secure_filename
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import matplotlib.pyplot as plt
@@ -10,7 +9,7 @@ import pandas as pd
 import numpy as np
 import os
 import shutil
-import random
+
 
 
 app=Flask(__name__,template_folder='template')
@@ -78,7 +77,7 @@ to_html.close()
 x_size=13
 y_size=6
 x_col="A"
-y_col="C"
+y_col="A"
 y_vals=["A","C"]
 
 plot_type=-1
@@ -98,8 +97,6 @@ def home():
 
 @app.route('/iframe')
 def iframe():
-    #global df
-    global uploaded_file
     return render_template('plot.html')
 
 
@@ -161,40 +158,46 @@ def form_data():
         global df
         global uploaded_file
         
-        # getting input with name = x_col in HTML form
-        #data=request.form.get("FILE")
-        
         x_co= request.form.get("x_col")
         if x_co!="":
             x_col=x_co
-        # getting input with name = x_col in HTML form
+        
         y_va = request.form.get("y_col")
         if y_va!="":
             y_vals=y_va.split(',')
             y_col=y_vals[0]
             
-            
         plot_tp=request.form.get("plot_type")
         if plot_tp!="":
             plot_type=plot_tp
         
-        
-        if len(file_names)!=0:
-            df=pd.read_excel(uploaded_file)
-        
-    
+
         if len(file_names)>0:
+            df=pd.read_excel(uploaded_file)
             flash('File in Use: ' + file_names[-1])
         
-     
+        
+            
     return render_template('form.html')
 
 @app.route('/visualize')
 def visualize():
     global df
     global uploaded_file
+    global plot_type
+    global x_col
+    global y_vals
     
     X=df[x_col].to_list()
+    
+    if x_col not in df.columns:
+        plot_type="err"
+        
+    
+    for y in y_vals:
+        if y not in df.columns:
+            plot_type="err"
+            
     
     if plot_type=='Line Graph':
         #Y=df[y_col].to_list()
@@ -304,7 +307,9 @@ def visualize():
         img.seek(0)
         return send_file(img,mimetype='img/jpg')
 
-   
+    elif plot_type=="err":
+        return send_file("static/start4.png")
+        
     else:
         if len(file_names)!=0:
             return send_file("static/start2.png")
